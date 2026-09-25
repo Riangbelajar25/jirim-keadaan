@@ -1,0 +1,262 @@
+    <!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>物态变化大冒险 - 科学小游戏</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+        }
+        body {
+            background-color: #f0f4f8;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        .subtitle {
+            color: #7f8c8d;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        .game-container {
+            width: 100%;
+            max-width: 800px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        .level-tabs {
+            display: flex;
+            background: #e2e8f0;
+            overflow-x: auto;
+        }
+        .tab-btn {
+            flex: 1;
+            padding: 12px 8px;
+            border: none;
+            background: transparent;
+            font-size: 14px;
+            font-weight: bold;
+            color: #4a5568;
+            cursor: pointer;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+        .tab-btn.active {
+            background: white;
+            color: #3182ce;
+            border-top: 3px solid #3182ce;
+        }
+        .display-area {
+            position: relative;
+            width: 100%;
+            padding-top: 56.25%; /* 16:9 比例 */
+            background: #f7fafc;
+        }
+        .display-area img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            padding: 10px;
+        }
+        .control-panel {
+            padding: 20px;
+            background: white;
+            border-top: 1px solid #edf2f7;
+        }
+        .info-card {
+            background: #ebf8ff;
+            border-left: 4px solid #3182ce;
+            padding: 12px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+        }
+        .info-title {
+            font-weight: bold;
+            color: #2b6cb0;
+            margin-bottom: 4px;
+        }
+        .info-desc {
+            font-size: 14px;
+            color: #4a5568;
+        }
+        .action-btns {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.1s, background 0.3s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .btn:active {
+            transform: scale(0.95);
+        }
+        .btn-heat {
+            background: #ff6b6b;
+            color: white;
+        }
+        .btn-cool {
+            background: #4dabf7;
+            color: white;
+        }
+        .btn-action {
+            background: #51cf66;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>✨ 物态变化大冒险 ✨</h1>
+    <p class="subtitle">点击下方按钮控制温度或观察现象，解锁不同的物理状态！</p>
+
+    <div class="game-container">
+        <!-- 关卡切换标签 -->
+        <div class="level-tabs">
+            <button class="tab-btn active" onclick="selectLevel(1)">1. 熔化 (冰遇热)</button>
+            <button class="tab-btn" onclick="selectLevel(2)">2. 凝固 (水结冰)</button>
+            <button class="tab-btn" onclick="selectLevel(3)">3. 蒸发 (水变汽)</button>
+            <button class="tab-btn" onclick="selectLevel(4)">4. 冷凝 (饭煲水珠)</button>
+            <button class="tab-btn" onclick="selectLevel(5)">5. 升华 (樟脑丸)</button>
+        </div>
+
+        <!-- 图片展示区 -->
+        <div class="display-area">
+            <img id="game-image" src="" alt="物理状态展示">
+        </div>
+
+        <!-- 交互控制与说明区 -->
+        <div class="control-panel">
+            <div class="info-card">
+                <div class="info-title" id="info-title">标题</div>
+                <div class="info-desc" id="info-desc">说明文本</div>
+            </div>
+
+            <div class="action-btns" id="action-buttons">
+                <!-- 动态生成按钮 -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 将上传的图片与游戏关卡逻辑绑定
+        const levels = {
+            1: {
+                title: "🔥 关卡 1：熔化 (Melting)",
+                desc: "冰块吸收了太阳和外界的热量，从固态冰雪融化成了液态小水滴！",
+                img: "1000040257.jpg", // 图 5：熔化
+                btns: [
+                    { text: "☀️ 增加热量 (熔化)", action: "heat" },
+                    { text: "➡️ 下一关：凝固", action: "next", target: 2 }
+                ]
+            },
+            2: {
+                title: "❄️ 关卡 2：凝固 (Freezing)",
+                desc: "液态水滴遇冷放出热量，凝固成了坚硬的冰块和雪花！",
+                img: "1000040321.jpg", // 图 4：凝固
+                btns: [
+                    { text: "❄️ 降低温度 (凝固)", action: "cool" },
+                    { text: "➡️ 下一关：蒸发", action: "next", target: 3 }
+                ]
+            },
+            3: {
+                title: "☁️ 关卡 3：蒸发 (Evaporation)",
+                desc: "水池里的小水滴受热后，向上飞升变成了水蒸气和云朵！",
+                img: "1000040322.jpg", // 图 3：蒸发
+                btns: [
+                    { text: "♨️ 加热蒸发", action: "heat" },
+                    { text: "➡️ 下一关：冷凝", action: "next", target: 4 }
+                ]
+            },
+            4: {
+                title: "💧 关卡 4：冷凝 (Condensation)",
+                desc: "蒸饭时产生的高温水蒸气遇到较冷的黑色锅盖，受冷凝结成了一颗颗可爱的小水珠！",
+                img: "1000040324.png", // 图 1：饭煲冷凝
+                btns: [
+                    { text: "盖上锅盖 (水蒸气遇冷)", action: "cool" },
+                    { text: "➡️ 下一关：升华", action: "next", target: 5 }
+                ]
+            },
+            5: {
+                title: "🌸 关卡 5：升华 (Sublimation)",
+                desc: "衣柜里的樟脑丸没有经过液态，直接从固态升华成了气态气体，成功驱赶了小衣蛾！",
+                img: "1000040323.png", // 图 2：樟脑丸升华
+                btns: [
+                    { text: "🦋 释放防虫气体", action: "action" },
+                    { text: "🔄 重新开始", action: "next", target: 1 }
+                ]
+            }
+        };
+
+        let currentLevel = 1;
+
+        function selectLevel(levelNum) {
+            currentLevel = levelNum;
+            const data = levels[levelNum];
+
+            // 更新图片与文字
+            document.getElementById('game-image').src = data.img;
+            document.getElementById('info-title').innerText = data.title;
+            document.getElementById('info-desc').innerText = data.desc;
+
+            // 更新标签样式
+            const tabs = document.querySelectorAll('.tab-btn');
+            tabs.forEach((tab, idx) => {
+                if (idx + 1 === levelNum) {
+                    tab.classList.add('active');
+                } else {
+                    tab.classList.remove('active');
+                }
+            });
+
+            // 更新控制按钮
+            const btnContainer = document.getElementById('action-buttons');
+            btnContainer.innerHTML = '';
+            
+            data.btns.forEach(b => {
+                const btn = document.createElement('button');
+                btn.className = 'btn ';
+                if (b.action === 'heat') btn.className += 'btn-heat';
+                else if (b.action === 'cool') btn.className += 'btn-cool';
+                else btn.className += 'btn-action';
+
+                btn.innerText = b.text;
+                btn.onclick = () => {
+                    if (b.target) {
+                        selectLevel(b.target);
+                    } else {
+                        alert(`已触发：${b.text}！观察图片中的形态变化吧！`);
+                    }
+                };
+                btnContainer.appendChild(btn);
+            });
+        }
+
+        // 初始化游戏
+        selectLevel(1);
+    </script>
+</body>
+</html>
