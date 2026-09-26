@@ -1,9 +1,9 @@
-    <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>物态变化大冒险 - 科学小游戏</title>
+    <title>Perubahan Keadaan Jirim - 物态变化大冒险</title>
     <style>
         * {
             box-sizing: border-box;
@@ -21,13 +21,14 @@
         }
         h1 {
             color: #2c3e50;
-            margin-bottom: 10px;
+            margin-bottom: 5px;
             text-align: center;
         }
         .subtitle {
             color: #7f8c8d;
             margin-bottom: 20px;
             font-size: 14px;
+            text-align: center;
         }
         .game-container {
             width: 100%;
@@ -49,7 +50,7 @@
             padding: 12px 8px;
             border: none;
             background: transparent;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: bold;
             color: #4a5568;
             cursor: pointer;
@@ -96,11 +97,13 @@
         .info-desc {
             font-size: 14px;
             color: #4a5568;
+            line-height: 1.5;
         }
         .action-btns {
             display: flex;
             gap: 10px;
             justify-content: center;
+            flex-wrap: wrap;
         }
         .btn {
             padding: 10px 20px;
@@ -130,22 +133,22 @@
 </head>
 <body>
 
-    <h1>✨ 物态变化大冒险 ✨</h1>
-    <p class="subtitle">点击下方按钮控制温度或观察现象，解锁不同的物理状态！</p>
+    <h1>✨ Perubahan Keadaan Jirim ✨</h1>
+    <p class="subtitle">物态变化大冒险：点击切换标签或控制温度，观察 Jirim 的形态变化！</p>
 
     <div class="game-container">
         <!-- 关卡切换标签 -->
         <div class="level-tabs">
-            <button class="tab-btn active" onclick="selectLevel(1)">1. 熔化 (冰遇热)</button>
-            <button class="tab-btn" onclick="selectLevel(2)">2. 凝固 (水结冰)</button>
-            <button class="tab-btn" onclick="selectLevel(3)">3. 蒸发 (水变汽)</button>
-            <button class="tab-btn" onclick="selectLevel(4)">4. 冷凝 (饭煲水珠)</button>
-            <button class="tab-btn" onclick="selectLevel(5)">5. 升华 (樟脑丸)</button>
+            <button class="tab-btn active" onclick="selectLevel(1)">1. Peleburan (熔化)</button>
+            <button class="tab-btn" onclick="selectLevel(2)">2. Pembekuan (凝固)</button>
+            <button class="tab-btn" onclick="selectLevel(3)">3. Penyejatan (蒸发)</button>
+            <button class="tab-btn" onclick="selectLevel(4)">4. Pemeluwapan (冷凝)</button>
+            <button class="tab-btn" onclick="selectLevel(5)">5. Penyubliman (升华)</button>
         </div>
 
         <!-- 图片展示区 -->
         <div class="display-area">
-            <img id="game-image" src="" alt="物理状态展示">
+            <img id="game-image" src="" alt="Perubahan Keadaan Jirim">
         </div>
 
         <!-- 交互控制与说明区 -->
@@ -162,51 +165,51 @@
     </div>
 
     <script>
-        // 将上传的图片与游戏关卡逻辑绑定
+        // 绑定 GitHub 仓库中真实的图片文件名
         const levels = {
             1: {
-                title: "🔥 关卡 1：熔化 (Melting)",
-                desc: "冰块吸收了太阳和外界的热量，从固态冰雪融化成了液态小水滴！",
-                img: "1000040257.jpg", // 图 5：熔化
+                title: "🔥 关卡 1：Peleburan (Melting / 熔化)",
+                desc: "Pepejal (固态冰块) 吸收热量 (Menyerap haba)，熔化成 Cecair (液态水)！",
+                img: "1000040257.jpg",
                 btns: [
-                    { text: "☀️ 增加热量 (熔化)", action: "heat" },
-                    { text: "➡️ 下一关：凝固", action: "next", target: 2 }
+                    { text: "☀️ Menyerap Haba (吸热熔化)", action: "heat" },
+                    { text: "➡️ Seterusnya: Pembekuan (下一关)", action: "next", target: 2 }
                 ]
             },
             2: {
-                title: "❄️ 关卡 2：凝固 (Freezing)",
-                desc: "液态水滴遇冷放出热量，凝固成了坚硬的冰块和雪花！",
-                img: "1000040321.jpg", // 图 4：凝固
+                title: "❄️ 关卡 2：Pembekuan (Freezing / 凝固)",
+                desc: "Cecair (液态水) 释放热量 (Bebas haba)，凝固成 Pepejal (固态冰块)！",
+                img: "1000040321.jpg",
                 btns: [
-                    { text: "❄️ 降低温度 (凝固)", action: "cool" },
-                    { text: "➡️ 下一关：蒸发", action: "next", target: 3 }
+                    { text: "❄️ Bebas Haba (散热凝固)", action: "cool" },
+                    { text: "➡️ Seterusnya: Penyejatan (下一关)", action: "next", target: 3 }
                 ]
             },
             3: {
-                title: "☁️ 关卡 3：蒸发 (Evaporation)",
-                desc: "水池里的小水滴受热后，向上飞升变成了水蒸气和云朵！",
-                img: "1000040322.jpg", // 图 3：蒸发
+                title: "☁️ 关卡 3：Penyejatan (Evaporation / 蒸发)",
+                desc: "Cecair (水) 吸收热量变热后，蒸发成 Gas (水蒸气/云朵)！",
+                img: "1000040322.jpg",
                 btns: [
-                    { text: "♨️ 加热蒸发", action: "heat" },
-                    { text: "➡️ 下一关：冷凝", action: "next", target: 4 }
+                    { text: "♨️ Menyerap Haba (吸热蒸发)", action: "heat" },
+                    { text: "➡️ Seterusnya: Pemeluwapan (下一关)", action: "next", target: 4 }
                 ]
             },
             4: {
-                title: "💧 关卡 4：冷凝 (Condensation)",
-                desc: "蒸饭时产生的高温水蒸气遇到较冷的黑色锅盖，受冷凝结成了一颗颗可爱的小水珠！",
-                img: "1000040324.png", // 图 1：饭煲冷凝
+                title: "💧 关卡 4：Pemeluwapan (Condensation / 冷凝)",
+                desc: "Gas (高温水蒸气) 遇到较凉的锅盖释放热量，凝结成 Cecair (小水珠)！",
+                img: "1000040324.png",
                 btns: [
-                    { text: "盖上锅盖 (水蒸气遇冷)", action: "cool" },
-                    { text: "➡️ 下一关：升华", action: "next", target: 5 }
+                    { text: "💧 Bebas Haba (遇冷凝结)", action: "cool" },
+                    { text: "➡️ Seterusnya: Penyubliman (下一关)", action: "next", target: 5 }
                 ]
             },
             5: {
-                title: "🌸 关卡 5：升华 (Sublimation)",
-                desc: "衣柜里的樟脑丸没有经过液态，直接从固态升华成了气态气体，成功驱赶了小衣蛾！",
-                img: "1000040323.png", // 图 2：樟脑丸升华
+                title: "🌸 关卡 5：Penyubliman (Sublimation / 升华)",
+                desc: "Pepejal (樟脑丸) 不经过液态，直接吸收热量升变成 Gas (防虫气体)！",
+                img: "1000040323.png",
                 btns: [
-                    { text: "🦋 释放防虫气体", action: "action" },
-                    { text: "🔄 重新开始", action: "next", target: 1 }
+                    { text: "🦋 Penyubliman (升华气体)", action: "action" },
+                    { text: "🔄 Mula Semula (重新开始)", action: "next", target: 1 }
                 ]
             }
         };
@@ -248,7 +251,7 @@
                     if (b.target) {
                         selectLevel(b.target);
                     } else {
-                        alert(`已触发：${b.text}！观察图片中的形态变化吧！`);
+                        alert(`已触发：${b.text}！请观察图中的状态变化。`);
                     }
                 };
                 btnContainer.appendChild(btn);
