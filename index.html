@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Perubahan Keadaan Jirim - 物态变化大冒险</title>
+    <title>Perubahan Keadaan Jirim - 科学互动游戏</title>
     <style>
         * {
             box-sizing: border-box;
@@ -30,236 +30,314 @@
             font-size: 14px;
             text-align: center;
         }
-        .game-container {
+        .container {
             width: 100%;
-            max-width: 800px;
+            max-width: 700px;
             background: white;
             border-radius: 20px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            overflow: hidden;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .stage-title {
+            background: #3182ce;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 10px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        /* 第一关：配对样式 */
+        .match-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .column {
             display: flex;
             flex-direction: column;
-        }
-        .level-tabs {
-            display: flex;
-            background: #e2e8f0;
-            overflow-x: auto;
-        }
-        .tab-btn {
-            flex: 1;
-            padding: 12px 8px;
-            border: none;
-            background: transparent;
-            font-size: 13px;
-            font-weight: bold;
-            color: #4a5568;
-            cursor: pointer;
-            transition: all 0.3s;
-            white-space: nowrap;
-        }
-        .tab-btn.active {
-            background: white;
-            color: #3182ce;
-            border-top: 3px solid #3182ce;
-        }
-        .display-area {
-            position: relative;
-            width: 100%;
-            padding-top: 56.25%; /* 16:9 比例 */
-            background: #f7fafc;
-        }
-        .display-area img {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            padding: 10px;
-        }
-        .control-panel {
-            padding: 20px;
-            background: white;
-            border-top: 1px solid #edf2f7;
-        }
-        .info-card {
-            background: #ebf8ff;
-            border-left: 4px solid #3182ce;
-            padding: 12px;
-            border-radius: 4px;
-            margin-bottom: 15px;
-        }
-        .info-title {
-            font-weight: bold;
-            color: #2b6cb0;
-            margin-bottom: 4px;
-        }
-        .info-desc {
-            font-size: 14px;
-            color: #4a5568;
-            line-height: 1.5;
-        }
-        .action-btns {
-            display: flex;
             gap: 10px;
-            justify-content: center;
-            flex-wrap: wrap;
         }
-        .btn {
-            padding: 10px 20px;
+        .card {
+            background: #edf2f7;
+            border: 2px solid #cbd5e0;
+            padding: 12px;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            font-weight: bold;
+            color: #2d3748;
+            transition: all 0.2s;
+            user-select: none;
+        }
+        .card:hover {
+            background: #e2e8f0;
+        }
+        .card.selected {
+            background: #feebc8;
+            border-color: #dd6b20;
+            color: #c05621;
+        }
+        .card.matched {
+            background: #c6f6d5;
+            border-color: #38a169;
+            color: #22543d;
+            cursor: default;
+        }
+
+        /* 第二关：看图填字样式 */
+        .puzzle-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+        .img-display {
+            width: 100%;
+            max-height: 250px;
+            object-fit: contain;
+            border-radius: 10px;
+            background: #f7fafc;
+            border: 1px solid #e2e8f0;
+            padding: 5px;
+        }
+        .word-input-container {
+            display: flex;
+            gap: 6px;
+            margin: 10px 0;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .letter-box {
+            width: 38px;
+            height: 42px;
+            border: 2px solid #4a5568;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            text-transform: uppercase;
+            text-align: center;
+            background: #fff;
+        }
+        .letter-box.correct {
+            background: #c6f6d5;
+            border-color: #38a169;
+            color: #22543d;
+        }
+
+        .btn-action {
+            background: #48bb78;
+            color: white;
             border: none;
+            padding: 12px 25px;
             border-radius: 20px;
             font-weight: bold;
+            font-size: 16px;
             cursor: pointer;
-            transition: transform 0.1s, background 0.3s;
+            margin-top: 15px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
-        .btn:active {
-            transform: scale(0.95);
+        .btn-action:hover {
+            background: #38a169;
         }
-        .btn-heat {
-            background: #ff6b6b;
-            color: white;
+        .hidden {
+            display: none !important;
         }
-        .btn-cool {
-            background: #4dabf7;
-            color: white;
-        }
-        .btn-action {
-            background: #51cf66;
-            color: white;
+        .hint {
+            color: #718096;
+            font-size: 13px;
+            text-align: center;
         }
     </style>
 </head>
 <body>
 
     <h1>✨ Perubahan Keadaan Jirim ✨</h1>
-    <p class="subtitle">物态变化大冒险：点击切换标签或控制温度，观察 Jirim 的形态变化！</p>
+    <p class="subtitle">Sains Tingkatan 1: 关卡挑战游戏</p>
 
-    <div class="game-container">
-        <!-- 关卡切换标签 -->
-        <div class="level-tabs">
-            <button class="tab-btn active" onclick="selectLevel(1)">1. Peleburan (熔化)</button>
-            <button class="tab-btn" onclick="selectLevel(2)">2. Pembekuan (凝固)</button>
-            <button class="tab-btn" onclick="selectLevel(3)">3. Penyejatan (蒸发)</button>
-            <button class="tab-btn" onclick="selectLevel(4)">4. Pemeluwapan (冷凝)</button>
-            <button class="tab-btn" onclick="selectLevel(5)">5. Penyubliman (升华)</button>
+    <!-- 第一关：配对游戏 -->
+    <div id="stage1" class="container">
+        <div class="stage-title">第一关：词汇与概念配对 (Padankan Terminology)</div>
+        <p class="hint" style="margin-bottom: 12px;">点击左边的词汇，再点击右边对应的说明进行匹配！</p>
+        
+        <div class="match-grid">
+            <div class="column" id="terms-column"></div>
+            <div class="column" id="descs-column"></div>
         </div>
 
-        <!-- 图片展示区 -->
-        <div class="display-area">
-            <img id="game-image" src="" alt="Perubahan Keadaan Jirim">
+        <div style="text-align: center; margin-top: 20px;">
+            <button id="to-stage2-btn" class="btn-action hidden" onclick="startStage2()">🎉 挑战成功！进入第二关：看图填字 ➡️</button>
         </div>
+    </div>
 
-        <!-- 交互控制与说明区 -->
-        <div class="control-panel">
-            <div class="info-card">
-                <div class="info-title" id="info-title">标题</div>
-                <div class="info-desc" id="info-desc">说明文本</div>
-            </div>
+    <!-- 第二关：看图填字 -->
+    <div id="stage2" class="container hidden">
+        <div class="stage-title" id="puzzle-progress">第二关：看图填字 (Isi Tempat Kosong) [1/6]</div>
+        
+        <div class="puzzle-box">
+            <img id="puzzle-img" class="img-display" src="" alt="Soalan Gambar">
+            <p id="puzzle-hint-text" class="hint" style="font-size: 15px; font-weight: bold; color: #2d3748;"></p>
+            
+            <div class="word-input-container" id="inputs-container"></div>
 
-            <div class="action-btns" id="action-buttons">
-                <!-- 动态生成按钮 -->
-            </div>
+            <button class="btn-action" onclick="checkPuzzleAnswer()">提交答案 (Semak Jawapan)</button>
         </div>
     </div>
 
     <script>
-        // 绑定 GitHub 仓库中真实的图片文件名
-        const levels = {
-            1: {
-                title: "🔥 关卡 1：Peleburan (Melting / 熔化)",
-                desc: "Pepejal (固态冰块) 吸收热量 (Menyerap haba)，熔化成 Cecair (液态水)！",
-                img: "1000040257.jpg",
-                btns: [
-                    { text: "☀️ Menyerap Haba (吸热熔化)", action: "heat" },
-                    { text: "➡️ Seterusnya: Pembekuan (下一关)", action: "next", target: 2 }
-                ]
-            },
-            2: {
-                title: "❄️ 关卡 2：Pembekuan (Freezing / 凝固)",
-                desc: "Cecair (液态水) 释放热量 (Bebas haba)，凝固成 Pepejal (固态冰块)！",
-                img: "1000040321.jpg",
-                btns: [
-                    { text: "❄️ Bebas Haba (散热凝固)", action: "cool" },
-                    { text: "➡️ Seterusnya: Penyejatan (下一关)", action: "next", target: 3 }
-                ]
-            },
-            3: {
-                title: "☁️ 关卡 3：Penyejatan (Evaporation / 蒸发)",
-                desc: "Cecair (水) 吸收热量变热后，蒸发成 Gas (水蒸气/云朵)！",
-                img: "1000040322.jpg",
-                btns: [
-                    { text: "♨️ Menyerap Haba (吸热蒸发)", action: "heat" },
-                    { text: "➡️ Seterusnya: Pemeluwapan (下一关)", action: "next", target: 4 }
-                ]
-            },
-            4: {
-                title: "💧 关卡 4：Pemeluwapan (Condensation / 冷凝)",
-                desc: "Gas (高温水蒸气) 遇到较凉的锅盖释放热量，凝结成 Cecair (小水珠)！",
-                img: "1000040324.png",
-                btns: [
-                    { text: "💧 Bebas Haba (遇冷凝结)", action: "cool" },
-                    { text: "➡️ Seterusnya: Penyubliman (下一关)", action: "next", target: 5 }
-                ]
-            },
-            5: {
-                title: "🌸 关卡 5：Penyubliman (Sublimation / 升华)",
-                desc: "Pepejal (樟脑丸) 不经过液态，直接吸收热量升变成 Gas (防虫气体)！",
-                img: "1000040323.png",
-                btns: [
-                    { text: "🦋 Penyubliman (升华气体)", action: "action" },
-                    { text: "🔄 Mula Semula (重新开始)", action: "next", target: 1 }
-                ]
-            }
-        };
+        // 游戏数据（增加了 Pendidihan）
+        const matchData = [
+            { id: 1, term: "Peleburan (融化)", desc: "Pepejal ➔ Cecair (吸热 Menyerap haba)" },
+            { id: 2, term: "Pembekuan (凝固)", desc: "Cecair ➔ Pepejal (散热 Bebas haba)" },
+            { id: 3, term: "Penyejatan (蒸发)", desc: "Cecair ➔ Gas (在任何温度下发生)" },
+            { id: 4, term: "Pendidihan (沸腾)", desc: "Cecair ➔ Gas (在沸点 100°C 发生)" },
+            { id: 5, term: "Kondensasi (凝结)", desc: "Gas ➔ Cecair (散热 Bebas haba)" },
+            { id: 6, term: "Pemejalwapan (升华)", desc: "Pepejal ➔ Gas (不经过液态)" }
+        ];
 
-        let currentLevel = 1;
+        const puzzleData = [
+            { img: "1000040257.jpg", answer: "PELEBURAN", hint: "冰块受热变成水的过程 (Pepejal menjadi cecair)" },
+            { img: "1000040321.jpg", answer: "PEMBEKUAN", hint: "水放入冰箱变成冰块的过程 (Cecair menjadi pepejal)" },
+            { img: "1000040322.jpg", answer: "PENYEJATAN", hint: "水吸热变成水蒸气 (Cecair menjadi gas)" },
+            { img: "pendidihan.jpg", answer: "PENDIDIHAN", hint: "水加热到 100°C 快速变成气体 (Berlaku pada takat didih)" },
+            { img: "1000040324.png", answer: "KONDENSASI", hint: "水蒸气遇冷变成水滴 (Gas menjadi cecair)" },
+            { img: "1000040323.png", answer: "PEMEJAWAPAN", hint: "樟脑丸直接变成气体 (Pepejal menjadi gas)" }
+        ];
 
-        function selectLevel(levelNum) {
-            currentLevel = levelNum;
-            const data = levels[levelNum];
+        // 第一关逻辑
+        let selectedTerm = null;
+        let selectedDesc = null;
+        let matchedCount = 0;
 
-            // 更新图片与文字
-            document.getElementById('game-image').src = data.img;
-            document.getElementById('info-title').innerText = data.title;
-            document.getElementById('info-desc').innerText = data.desc;
+        function initStage1() {
+            const termsCol = document.getElementById('terms-column');
+            const descsCol = document.getElementById('descs-column');
 
-            // 更新标签样式
-            const tabs = document.querySelectorAll('.tab-btn');
-            tabs.forEach((tab, idx) => {
-                if (idx + 1 === levelNum) {
-                    tab.classList.add('active');
-                } else {
-                    tab.classList.remove('active');
-                }
+            const shuffledTerms = [...matchData].sort(() => Math.random() - 0.5);
+            const shuffledDescs = [...matchData].sort(() => Math.random() - 0.5);
+
+            shuffledTerms.forEach(item => {
+                const el = document.createElement('div');
+                el.className = 'card';
+                el.innerText = item.term;
+                el.dataset.id = item.id;
+                el.onclick = () => selectCard(el, 'term');
+                termsCol.appendChild(el);
             });
 
-            // 更新控制按钮
-            const btnContainer = document.getElementById('action-buttons');
-            btnContainer.innerHTML = '';
-            
-            data.btns.forEach(b => {
-                const btn = document.createElement('button');
-                btn.className = 'btn ';
-                if (b.action === 'heat') btn.className += 'btn-heat';
-                else if (b.action === 'cool') btn.className += 'btn-cool';
-                else btn.className += 'btn-action';
-
-                btn.innerText = b.text;
-                btn.onclick = () => {
-                    if (b.target) {
-                        selectLevel(b.target);
-                    } else {
-                        alert(`已触发：${b.text}！请观察图中的状态变化。`);
-                    }
-                };
-                btnContainer.appendChild(btn);
+            shuffledDescs.forEach(item => {
+                const el = document.createElement('div');
+                el.className = 'card';
+                el.innerText = item.desc;
+                el.dataset.id = item.id;
+                el.onclick = () => selectCard(el, 'desc');
+                descsCol.appendChild(el);
             });
         }
 
-        // 初始化游戏
-        selectLevel(1);
+        function selectCard(el, type) {
+            if (el.classList.contains('matched')) return;
+
+            if (type === 'term') {
+                if (selectedTerm) selectedTerm.classList.remove('selected');
+                selectedTerm = el;
+                selectedTerm.classList.add('selected');
+            } else {
+                if (selectedDesc) selectedDesc.classList.remove('selected');
+                selectedDesc = el;
+                selectedDesc.classList.add('selected');
+            }
+
+            if (selectedTerm && selectedDesc) {
+                if (selectedTerm.dataset.id === selectedDesc.dataset.id) {
+                    selectedTerm.className = 'card matched';
+                    selectedDesc.className = 'card matched';
+                    selectedTerm = null;
+                    selectedDesc = null;
+                    matchedCount++;
+                    if (matchedCount === matchData.length) {
+                        document.getElementById('to-stage2-btn').classList.remove('hidden');
+                    }
+                } else {
+                    setTimeout(() => {
+                        if (selectedTerm) selectedTerm.classList.remove('selected');
+                        if (selectedDesc) selectedDesc.classList.remove('selected');
+                        selectedTerm = null;
+                        selectedDesc = null;
+                    }, 400);
+                }
+            }
+        }
+
+        // 第二关逻辑
+        let currentPuzzleIdx = 0;
+
+        function startStage2() {
+            document.getElementById('stage1').classList.add('hidden');
+            document.getElementById('stage2').classList.remove('hidden');
+            loadPuzzle(0);
+        }
+
+        function loadPuzzle(idx) {
+            currentPuzzleIdx = idx;
+            const data = puzzleData[idx];
+            
+            document.getElementById('puzzle-progress').innerText = `第二关：看图填字 (Isi Tempat Kosong) [${idx + 1}/${puzzleData.length}]`;
+            document.getElementById('puzzle-img').src = data.img;
+            document.getElementById('puzzle-hint-text').innerText = data.hint;
+
+            const container = document.getElementById('inputs-container');
+            container.innerHTML = '';
+
+            for (let i = 0; i < data.answer.length; i++) {
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.maxLength = 1;
+                input.className = 'letter-box';
+                input.dataset.index = i;
+
+                input.oninput = (e) => {
+                    if (e.target.value && i < data.answer.length - 1) {
+                        container.children[i + 1].focus();
+                    }
+                };
+                
+                input.onkeydown = (e) => {
+                    if (e.key === 'Backspace' && !e.target.value && i > 0) {
+                        container.children[i - 1].focus();
+                    }
+                };
+
+                container.appendChild(input);
+            }
+            container.children[0].focus();
+        }
+
+        function checkPuzzleAnswer() {
+            const data = puzzleData[currentPuzzleIdx];
+            const inputs = document.querySelectorAll('.letter-box');
+            let userAns = '';
+            
+            inputs.forEach(inp => userAns += inp.value.toUpperCase());
+
+            if (userAns === data.answer) {
+                inputs.forEach(inp => inp.classList.add('correct'));
+                setTimeout(() => {
+                    if (currentPuzzleIdx + 1 < puzzleData.length) {
+                        alert("✅ 答对了！进入下一题。");
+                        loadPuzzle(currentPuzzleIdx + 1);
+                    } else {
+                        alert("🎉 恭喜你！全部通关！你已经完全掌握了 Perubahan Keadaan Jirim！");
+                    }
+                }, 500);
+            } else {
+                alert("❌ 拼写有误，再试一次哦！提示：注意马来文词汇的拼写。");
+            }
+        }
+
+        // 启动第一关
+        initStage1();
     </script>
 </body>
 </html>
