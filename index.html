@@ -186,7 +186,17 @@
     </div>
 
     <script>
-        // 游戏数据（增加了 Pendidihan）
+        // 语音朗读函数
+        function speakWord(word) {
+            if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance(word);
+                utterance.lang = 'ms-MY'; // 马来语发音
+                utterance.rate = 0.9;     // 语速稍慢，听得更清晰
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
+        // 游戏数据
         const matchData = [
             { id: 1, term: "Peleburan (融化)", desc: "Pepejal ➔ Cecair (吸热 Menyerap haba)" },
             { id: 2, term: "Pembekuan (凝固)", desc: "Cecair ➔ Pepejal (散热 Bebas haba)" },
@@ -202,7 +212,7 @@
             { img: "1000040322.jpg", answer: "PENYEJATAN", hint: "水吸热变成水蒸气 (Cecair menjadi gas)" },
             { img: "pendidihan.jpg", answer: "PENDIDIHAN", hint: "水加热到 100°C 快速变成气体 (Berlaku pada takat didih)" },
             { img: "1000040324.png", answer: "KONDENSASI", hint: "水蒸气遇冷变成水滴 (Gas menjadi cecair)" },
-            { img: "1000040323.png", answer: "PEMEJAWAPAN", hint: "樟脑丸直接变成气体 (Pepejal menjadi gas)" }
+            { img: "1000040323.png", answer: "PEMEJALWAPAN", hint: "樟脑丸直接变成气体 (Pepejal menjadi gas)" }
         ];
 
         // 第一关逻辑
@@ -323,16 +333,20 @@
 
             if (userAns === data.answer) {
                 inputs.forEach(inp => inp.classList.add('correct'));
+                
+                // 朗读正确答案
+                speakWord(data.answer);
+
                 setTimeout(() => {
                     if (currentPuzzleIdx + 1 < puzzleData.length) {
-                        alert("✅ 答对了！进入下一题。");
+                        alert("🎉 YOU ARE WELL DONE.");
                         loadPuzzle(currentPuzzleIdx + 1);
                     } else {
-                        alert("🎉 恭喜你！全部通关！你已经完全掌握了 Perubahan Keadaan Jirim！");
+                        alert("🎉 YOU ARE WELL DONE.\n恭喜你！全部通关！你已经完全掌握了 Perubahan Keadaan Jirim！");
                     }
-                }, 500);
+                }, 400);
             } else {
-                alert("❌ 拼写有误，再试一次哦！提示：注意马来文词汇的拼写。");
+                alert("💪 加油哦");
             }
         }
 
